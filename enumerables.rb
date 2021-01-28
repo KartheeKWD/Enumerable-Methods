@@ -23,8 +23,20 @@ module Enumerable
         end
         self
     end
+
+    def my_select
+        return to_enum(:my_select) unless  block_given?
+        i = 0
+        arr = self.to_a
+        new_array = []
+        arr.each do |i|
+            new_array.push(i) if yield i
+        end 
+       return new_array
+    end 
 end
 
 a = [1, 2,3,4]
 p a.my_each{ |i| puts i}
-p a.my_each_with_index { |item ,index| p "#{item} is at index #{index}" }
+p a.my_each_with_index { |item ,index| p "#{index} : #{item}" }
+p a.my_select {|item|  item == 2 }
