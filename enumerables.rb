@@ -34,9 +34,19 @@ module Enumerable
         end 
        return new_array
     end 
+
+    def my_all?
+        return to_enum(:my_all?) unless  block_given?
+        arr = self.to_a
+        arr.each do |i|
+          
+        end 
+    end
 end
 
 a = [1, 2,3,4]
-p a.my_each{ |i| puts i}
-p a.my_each_with_index { |item ,index| p "#{index} : #{item}" }
-p a.my_select {|item|  item == 2 }
+# p a.my_each{ |i| puts i}
+# p a.my_each_with_index { |item ,index| p "#{index} : #{item}" }
+# p a.my_select {|item|  item == 2 }
+p a.my_all? {|item|  item == 2 }
+p a.all? {|item|  item == 6 }
