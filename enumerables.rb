@@ -35,30 +35,39 @@ module Enumerable
        return new_array
     end 
 
-    # def my_all?
-    #     return to_enum(:my_all?) unless  block_given?
-    #     arr = self.to_a
-    #     arr.each do |i|
-          
-    #     end 
-    # end
+   
 
     def my_all?
         my_each{ |item| return false if yield(item) == false}
         true
-      end
+    end
 
-      def my_any?
+    def my_any?
         my_each{ |item| return true if yield(item) == true}
         false
-      end
+    end
 
-      def my_none?
+    def my_none?
         my_each{ |item| return false if yield(item) !=false}
         true
-      end
+    end
 
-      def my_count
+    def my_count(num = nil)
+        a = self.class == Array ? self : to_a
+        return a.length unless block_given? || num
+    
+        return a.select { |item| item == num }.length if num
+    
+        a.select { |item| yield(item) }.length
+    end
+    def my_map
+        a = self.class == Array ? self :to_a
+        a.my_each {|item| yield(item)}
+    end 
+
+
+
+        
 
 end
 
@@ -72,5 +81,7 @@ p a.any? {|item|  item <=2 }
 p a.my_any? {|item|  item <= 2 }
 p a.my_none? {|item|  item ==4 }
 p a.none? {|item|  item ==4 }
+p a.count(2) 
+p a.map { |item| item * 2 }
 
  
