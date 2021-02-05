@@ -28,11 +28,10 @@ module Enumerable
   def my_select
     return to_enum(:my_select) unless block_given?
 
-    i = 0
     arr = to_a
     new_array = []
-    arr.each do |i|
-      new_array.push(i) if yield i
+    arr.each do |item|
+      new_array.push(item) if yield item
     end
     new_array
   end
@@ -71,7 +70,7 @@ module Enumerable
       each { |item| new_arr << yield(item) }
     end
     new_arr
-    end
+  end
 
   # // If no block is given and an arithmetic symbol or string is given without an initial value
   # // If no block is given and an arithmetic symbol or string is given without an initial value
@@ -88,19 +87,18 @@ module Enumerable
         if initial_value.nil?
           initial_value = i
           next
-          end
+        end
         initial_value = yield(initial_value, i)
       end
-    else
-      if (symbol && symbol.class == Symbol) || (symbol && symbol.class == String && %r{[-+*/]}.match(symbol))
-        each do |i|
-          if initial_value.nil?
-            initial_value = i
-            next
-          end
-          initial_value = initial_value.send(symbol, i)
+    elsif (symbol && symbol.class == Symbol) || (symbol && symbol.class == String && %r{[-+*/]}.match(symbol))
+      each do |i|
+        if initial_value.nil?
+          initial_value = i
+          next
         end
+        initial_value = initial_value.send(symbol, i)
       end
+
     end
     initial_value
   end
@@ -110,19 +108,16 @@ module Enumerable
   end
 end
 
-a = [1, 2, 3, 4]
-b = [2, 4, 5]
-p a.my_each { |i| puts i }
-p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
-p a.my_select { |item| item == 2 }
-p a.my_all? { |item| item == 2 }
-p a.all? { |item| item == 6 }
-p a.any? { |item| item <= 2 }
-p a.my_any? { |item| item <= 2 }
-p a.my_none? { |item| item == 4 }
-p a.none? { |item| item == 4 }
-p a.count(2)
-test_proc = proc { |item| item * 2 }
-p a.my_map(&test_proc)
-p a.my_inject (10) { |a, b| a + b }
-p b.multiply_els
+# a = [1, 2, 3, 4]
+# b = [2, 4, 5]
+# p a.my_each { |i| puts i }
+# p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
+# p a.my_select { |item| item == 2 }
+# p a.my_all? { |item| item == 2 }
+# p a.my_any? { |item| item <= 2 }
+# p a.my_none? { |item| item == 4 }
+# p a.my_count(2)
+# test_proc = proc { |item| item * 2 }
+# p a.my_map(&test_proc)
+# p a.my_inject (10) { |a, b| a + b }
+# p b.multiply_els
