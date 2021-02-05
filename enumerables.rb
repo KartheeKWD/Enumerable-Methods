@@ -97,10 +97,15 @@ module Enumerable
         end
         initial_value
     end
+
+    def multiply_els
+        self.my_inject {|a, b| a*b }
+       
+    end
 end
 
 a = [1,2,3,4]
-p a.my_inject("=" ) 
+b = [2,4,5]
 # p a.my_each{ |i| puts i}
 # p a.my_each_with_index { |item ,index| p "#{index} : #{item}" }
 # p a.my_select {|item|  item == 2 }
@@ -112,5 +117,8 @@ p a.my_inject("=" )
 # p a.none? {|item|  item ==4 }
 # p a.count(2) 
 # p a.map { |item| item * 2 }
+# p a.my_inject (10){|a, b| a+b } 
+p b.multiply_els
+
 
  
