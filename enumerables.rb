@@ -74,7 +74,6 @@ module Enumerable
 
   # // If no block is given and an arithmetic symbol or string is given without an initial value
   # // If no block is given and an arithmetic symbol or string is given without an initial value
-
   def my_inject(*args)
     initial_value, symbol = args if args.length == 2
     symbol = args[0] if args.length == 1 && !block_given?
