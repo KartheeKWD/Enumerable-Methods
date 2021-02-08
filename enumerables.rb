@@ -37,17 +37,23 @@ module Enumerable
   end
 
   def my_all?
-    my_each { |item| return false if yield(item) == false }
+    return to_enum(:my_all?) unless block_given?
+    arr = to_a
+    arr.my_each { |item| return false if yield(item) == false }
     true
   end
 
   def my_any?
-    my_each { |item| return true if yield(item) == true }
+    return to_enum(:my_any?) unless block_given?
+    arr = to_a
+    arr.my_each { |item| return true if yield(item) == true }
     false
   end
 
   def my_none?
-    my_each { |item| return false if yield(item) != false }
+    return to_enum(:my_none?) unless block_given?
+    arr = to_a
+    arr.my_each { |item| return false if yield(item) != false }
     true
   end
 
@@ -107,13 +113,13 @@ module Enumerable
   end
 end
 
-# a = [1, 2, 3, 4]
+a = [1, 2, 3, 4]
 # b = [2, 4, 5]
 # p a.my_each { |i| puts i }
 # p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
 # p a.my_select { |item| item == 2 }
-# p a.my_all? { |item| item == 2 }
-# p a.my_any? { |item| item <= 2 }
+# p a.my_all?{ } 
+p a.my_any? { |item| item <= 2 }
 # p a.my_none? { |item| item == 4 }
 # p a.my_count(2)
 # test_proc = proc { |item| item * 2 }
