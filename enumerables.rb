@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/ModuleLength
 module Enumerable
   def my_each
     return to_enum(:my_each) unless block_given?
@@ -145,6 +146,8 @@ module Enumerable
     initial_value
   end
 end
+# rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/ModuleLength
+
 def multiply_els
   my_inject { |a, b| a * b }
 end
