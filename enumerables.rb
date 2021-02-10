@@ -36,24 +36,61 @@ module Enumerable
     new_array
   end
 
-  def my_all?
-    return to_enum(:my_all?) unless block_given?
-    arr = to_a
-    arr.my_each { |item| return false if yield(item) == false }
+  def my_all?(arg = nil)
+    if block_given?
+      my_each { |item| return false if yield(item) == false }
+      return true
+    elsif arg.nil?
+      my_each { |n| return false if n.nil? || n == false }
+    elsif !arg.nil? && (arg.is_a? Class)
+      my_each { |n| return false if n.class != arg }
+    elsif !arg.nil? && arg.class == Regexp
+      my_each { |n| return false unless arg.match(n) }
+    else
+      my_each { |n| return false if n != arg }
+    end
     true
   end
 
-  def my_any?
-    return to_enum(:my_any?) unless block_given?
-    arr = to_a
-    arr.my_each { |item| return true if yield(item) == true }
+  def my_any?(arg = nil)
+    if block_given?
+      my_each { |item| return true if yield(item) }
+      false
+    elsif arg.nil?
+      my_each { |n| return true if n.nil? || n == true }
+    elsif !arg.nil? && (arg.is_a? Class)
+      my_each { |n| return true if n.class == arg }
+    elsif !arg.nil? && arg.class == Regexp
+      my_each { |n| return true if arg.match(n) }
+    else
+      my_each { |n| return true if n == arg }
+    end
     false
   end
 
-  def my_none?
-    return to_enum(:my_none?) unless block_given?
-    arr = to_a
-    arr.my_each { |item| return false if yield(item) != false }
+  def my_none?(arg = nil)
+    if !block_given? && arg.nil?
+      my_each { |n| return true if n }
+      return false
+    end
+
+    if !block_given? && !arg.nil?
+
+      if arg.is_a?(Class)
+        my_each { |n| return false if n.class == arg }
+        return true
+      end
+
+      if arg.class == Regexp
+        my_each { |n| return false if arg.match(n) }
+        return true
+      end
+
+      my_each { |n| return false if n == arg }
+      return true
+    end
+
+    my_any? { |item| return false if yield(item) }
     true
   end
 
@@ -107,19 +144,19 @@ module Enumerable
     end
     initial_value
   end
-
-  def multiply_els
-    my_inject { |a, b| a * b }
-  end
+end
+def multiply_els
+  my_inject { |a, b| a * b }
 end
 
-a = [1, 2, 3, 4]
+# a = [1, 2, 3, 4]
+# b = [2,2,2,3,3]
 # b = [2, 4, 5]
 # p a.my_each { |i| puts i }
 # p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
 # p a.my_select { |item| item == 2 }
-# p a.my_all?{ } 
-p a.my_any? { |item| item <= 2 }
+# p a.my_all? { |item| item <= 2 }
+# p a.my_any? { |item| item <= 2 }
 # p a.my_none? { |item| item == 4 }
 # p a.my_count(2)
 # test_proc = proc { |item| item * 2 }
