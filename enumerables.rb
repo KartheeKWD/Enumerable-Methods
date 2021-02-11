@@ -58,8 +58,8 @@ module Enumerable
       my_each { |item| return true if yield(item) }
     elsif arg.nil?
       my_each { |n| return true if n.nil? || n == true }
-    elsif arg.is_a? Class  
-      my_each { |n| return true if n.class == Integer  }
+    elsif arg.is_a? Class
+      my_each { |n| return true if n.class == Integer }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return true if arg.match(n) }
     else
@@ -137,8 +137,8 @@ module Enumerable
 end
 # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/ModuleLength
 
-def multiply_els
-  my_inject { |a, b| a * b }
+def multiply_els(args)
+  args.my_inject { |result, element| result * element }
 end
 
 # a = [1, 2, 3, 4]
@@ -154,24 +154,22 @@ end
 # test_proc = proc { |item| item * 2 }
 # p a.my_map(&test_proc)
 # p a.my_inject (10) { |a, b| a + b }
-# p b.multiply_els
+# p multiply_els([2, 4, 5])
 
+# %w{ant bear cat}.none? { |word| word.length == 5 } #=> true
+# %w{ant bear cat}.none? { |word| word.length >= 4 } #=> false
+# %w{ant bear cat}.none?(/d/)                        #=> true
+# [1, 3.14, 42].none?(Float)                         #=> false
+# [].none?                                           #=> true
+# [nil].none?                                        #=> true
+# [nil, false].none?                                 #=> true
+# [nil, false, true].none?                           #=> false
 
-%w{ant bear cat}.none? { |word| word.length == 5 } #=> true
-%w{ant bear cat}.none? { |word| word.length >= 4 } #=> false
-%w{ant bear cat}.none?(/d/)                        #=> true
-[1, 3.14, 42].none?(Float)                         #=> false
-[].none?                                           #=> true
-[nil].none?                                        #=> true
-[nil, false].none?                                 #=> true
-[nil, false, true].none?                           #=> false
-
-p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-p %w{ant bear cat}.my_none?(/d/)                        #=> true
-p [1, 3.14, 42].my_none?(Float)                         #=> false
-p [].my_none?                                           #=> true
-p [nil].my_none?                                        #=> true
-p [nil, false].my_none?                                 #=> true
-p [nil, false, true].my_none?                           #=> false
-
+# p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+# p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+# p %w{ant bear cat}.my_none?(/d/)                        #=> true
+# p [1, 3.14, 42].my_none?(Float)                         #=> false
+# p [].my_none?                                           #=> true
+# p [nil].my_none?                                        #=> true
+# p [nil, false].my_none?                                 #=> true
+# p [nil, false, true].my_none?                           #=> false
