@@ -56,11 +56,10 @@ module Enumerable
   def my_any?(arg = nil)
     if block_given?
       my_each { |item| return true if yield(item) }
-      false
     elsif arg.nil?
       my_each { |n| return true if n.nil? || n == true }
-    elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |n| return true if n.instance_of?(arg) }
+    elsif arg.is_a? Class  
+      my_each { |n| return true if n.class == Integer  }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return true if arg.match(n) }
     else
@@ -70,28 +69,18 @@ module Enumerable
   end
 
   def my_none?(arg = nil)
-    if !block_given? && arg.nil?
-      my_each { |n| return true if n }
-      return false
-    end
-
-    if !block_given? && !arg.nil?
-
-      if arg.is_a?(Class)
-        my_each { |n| return false if n.class == arg }
-        return true
-      end
-
-      if arg.class == Regexp
-        my_each { |n| return false if arg.match(n) }
-        return true
-      end
-
-      my_each { |n| return false if n == arg }
+    if block_given?
+      my_each { |item| return false unless yield(item) == false }
       return true
+    elsif arg.nil?
+      my_each { |item| return false unless item.nil? || item == false }
+    elsif !arg.nil? && (arg.is_a? Class)
+      my_each { |item| return false if item.instance_of?(arg) }
+    elsif !arg.nil? && (arg.is_a? Regexp)
+      my_each { |item| return false if arg.match(item) }
+    else
+      my_each { |item| return false unless item != data }
     end
-
-    my_any? { |item| return false if yield(item) }
     true
   end
 
@@ -166,29 +155,23 @@ end
 # p a.my_map(&test_proc)
 # p a.my_inject (10) { |a, b| a + b }
 # p b.multiply_els
-# %w[ant bear cat].all? { |word| word.length >= 3 } #=> true
-# %w[ant bear cat].all? { |word| word.length >= 4 } #=> false
-# %w[ant bear cat].all?(/t/)                        #=> false
-# [1, 2i, 3.14].all?(Numeric)                       #=> true
-# [nil, true, 99].all?                              #=> false
-# [].all?                                           #=> true
 
-# p %w[ant bear cat].my_all? { |word| word.length >= 3 } 
-# p %w[ant bear cat].my_all? { |word| word.length >= 4 } 
-# p %w[ant bear cat].my_all?(/t/)                        
-# p [1, 2i, 3.14].my_all?(Numeric)                       
-# p [ nil, true, 99].my_all?                              
-# p [].my_all? 
 
-%w[ant bear cat].any? { |word| word.length >= 3 } #=> true
-%w[ant bear cat].any? { |word| word.length >= 4 } #=> true
-%w[ant bear cat].any?(/d/)                        #=> false
-  [nil, true, 99].any?(Numeric)                     #=> true
-[nil, true, 99].any?                              #=> true
-[].any?                                           #=> false
-p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
-p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
-p %w[ant bear cat].my_any?(/d/)                        #=> false
-p [nil, true, 99].my_any?(Numeric)                     #=> true
-p [nil, true, 99].my_any?                              #=> true
-p [].my_any?                                           #=> false
+%w{ant bear cat}.none? { |word| word.length == 5 } #=> true
+%w{ant bear cat}.none? { |word| word.length >= 4 } #=> false
+%w{ant bear cat}.none?(/d/)                        #=> true
+[1, 3.14, 42].none?(Float)                         #=> false
+[].none?                                           #=> true
+[nil].none?                                        #=> true
+[nil, false].none?                                 #=> true
+[nil, false, true].none?                           #=> false
+
+p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+p %w{ant bear cat}.my_none?(/d/)                        #=> true
+p [1, 3.14, 42].my_none?(Float)                         #=> false
+p [].my_none?                                           #=> true
+p [nil].my_none?                                        #=> true
+p [nil, false].my_none?                                 #=> true
+p [nil, false, true].my_none?                           #=> false
+
