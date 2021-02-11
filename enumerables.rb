@@ -44,7 +44,7 @@ module Enumerable
     elsif arg.nil?
       my_each { |n| return false if n.nil? || n == false }
     elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |n| return false if n.class != arg }
+      my_each { |n| return true if n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return false unless arg.match(n) }
     else
@@ -60,7 +60,7 @@ module Enumerable
     elsif arg.nil?
       my_each { |n| return true if n.nil? || n == true }
     elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |n| return true if n.class == arg }
+      my_each { |n| return true if n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return true if arg.match(n) }
     else
@@ -166,3 +166,29 @@ end
 # p a.my_map(&test_proc)
 # p a.my_inject (10) { |a, b| a + b }
 # p b.multiply_els
+# %w[ant bear cat].all? { |word| word.length >= 3 } #=> true
+# %w[ant bear cat].all? { |word| word.length >= 4 } #=> false
+# %w[ant bear cat].all?(/t/)                        #=> false
+# [1, 2i, 3.14].all?(Numeric)                       #=> true
+# [nil, true, 99].all?                              #=> false
+# [].all?                                           #=> true
+
+# p %w[ant bear cat].my_all? { |word| word.length >= 3 } 
+# p %w[ant bear cat].my_all? { |word| word.length >= 4 } 
+# p %w[ant bear cat].my_all?(/t/)                        
+# p [1, 2i, 3.14].my_all?(Numeric)                       
+# p [ nil, true, 99].my_all?                              
+# p [].my_all? 
+
+%w[ant bear cat].any? { |word| word.length >= 3 } #=> true
+%w[ant bear cat].any? { |word| word.length >= 4 } #=> true
+%w[ant bear cat].any?(/d/)                        #=> false
+  [nil, true, 99].any?(Numeric)                     #=> true
+[nil, true, 99].any?                              #=> true
+[].any?                                           #=> false
+p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
+p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
+p %w[ant bear cat].my_any?(/d/)                        #=> false
+p [nil, true, 99].my_any?(Numeric)                     #=> true
+p [nil, true, 99].my_any?                              #=> true
+p [].my_any?                                           #=> false
