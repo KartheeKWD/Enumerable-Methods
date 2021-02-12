@@ -53,63 +53,35 @@ module Enumerable
     true
   end
 
-  # def my_any?(arg = nil)
-  #   if block_given?
-  #     my_each { |item| return true if yield(item) }
-  #   elsif arg.nil?
-  #     my_each { |n| return true if n.nil? || n == true }
-  #   elsif arg.is_a? Class
-  #     my_each { |n| return true if n.is_a? arg ||n.instance_of?(arg)}
-  #   elsif !arg.nil? && arg.class == Regexp
-  #     my_each { |n| return true if arg.match(n) }
-  #   else
-  #     my_each { |n| return true if n == arg }
-  #   end
-  #   false
-  # end
+  def my_any?(arg = nil)
+    if block_given?
+      my_each { |item| return true if yield(item) }
+    elsif arg.nil?
+      my_each { |n| return true if n.nil? || n == true }
+    elsif arg.is_a? Class
+      my_each { |n| return true if n.is_a? arg || n.instance_of?(arg) }
+    elsif !arg.nil? && arg.class == Regexp
+      my_each { |n| return true if arg.match(n) }
+    else
+      my_each { |n| return true if n == arg }
+    end
+    false
+  end
 
-  def my_any?(arg = nil)   
-     if block_given?      
-      my_each { |elt| return true if yield(elt) }     
-       return false   
-       end   
-        arg.nil? ? arg.class.to_s : my_any? { |elt| elt }
-    if arg.class.to_s == 'Class'      
-      my_each { |elt| return true if elt.is_a? arg }  #
-      elsif arg.class.to_s == 'Regexp'     
-       my_each { |elt| return true if elt =~ arg }   
-       elsif arg.nil?     
-       my_each { |elt| return true if elt }   
-       else    
-       my_each { |elt| return true if elt == arg }   
-       end    
-       false 
-       end
-
-  # def my_none?(arg = nil)
-  #   if block_given?
-  #     my_each { |item| return false unless yield(item) == false }
-  #     return true
-  #   elsif arg.nil?
-  #     my_each { |item| return false unless item.nil? || item == false }
-  #   elsif !arg.nil? && (arg.is_a? Class)
-  #     my_each { |item| return false if item.instance_of?(arg) }
-  #   elsif !arg.nil? && (arg.is_a? Regexp)
-  #     my_each { |item| return false if arg.match(item) }
-  #   else
-  #     my_each { |item| return false unless item != data }
-  #   end
-  #   true
-  # end
-
-  def my_none?(arg = nil, &block)   
-     !my_any?(arg, &block) 
-     end
-    def my_count(number = nil, &block)  
-    arr = to_a   
-    return arr.length unless block_given? || number
-    return arr.my_select { |elt| elt == number }.length if number
-    arr.my_select(&block).length  
+  def my_none?(arg = nil)
+    if block_given?
+      my_each { |item| return false unless yield(item) == false }
+      return true
+    elsif arg.nil?
+      my_each { |item| return false unless item.nil? || item == false }
+    elsif !arg.nil? && (arg.is_a? Class)
+      my_each { |item| return false if item.instance_of?(arg) }
+    elsif !arg.nil? && (arg.is_a? Regexp)
+      my_each { |item| return false if arg.match(item) }
+    else
+      my_each { |item| return false unless item != data }
+    end
+    true
   end
 
   def my_count(num = nil)
@@ -169,36 +141,74 @@ def multiply_els(args)
   args.my_inject { |result, element| result * element }
 end
 
-a = [1, 2, 3, 4]
+# a = [1, 2, 3, 4]
 # b = [2,2,2,3,3]
 # b = [2, 4, 5]
 # p a.my_each { |i| puts i }
 # p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
 # p a.my_select { |item| item == 2 }
-p a.my_all? { |item| item <= 2 }
-p a.my_any? { |item| item <= 2 }
-p a.my_none? { |item| item == 4 }
+# p a.my_all? { |item| item <= 2 }
+# p a.my_any? { |item| item <= 2 }
+# p a.my_none? { |item| item == 4 }
 # p a.my_count(2)
 # test_proc = proc { |item| item * 2 }
 # p a.my_map(&test_proc)
 # p a.my_inject (10) { |a, b| a + b }
 # p multiply_els([2, 4, 5])
 
-# %w{ant bear cat}.none? { |word| word.length == 5 } #=> true
-# %w{ant bear cat}.none? { |word| word.length >= 4 } #=> false
-# %w{ant bear cat}.none?(/d/)                        #=> true
-# [1, 3.14, 42].none?(Float)                         #=> false
-# [].none?                                           #=> true
-# [nil].none?                                        #=> true
-# [nil, false].none?                                 #=> true
-# [nil, false, true].none?                           #=> false
-
 # p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
 # p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
 # p %w{ant bear cat}.my_none?(/d/)                        #=> true
-p [1, 3.14, 42].my_any?(Numeric)
-p [1, 3.14, 42].any?(Numeric)   #=> false
+# p [1, 3.14, 42].my_none?(Float)                         #=> false
 # p [].my_none?                                           #=> true
-# p [nil].my_none?                                        #=> true
+# p  [nil].my_none?                                        #=> true
 # p [nil, false].my_none?                                 #=> true
 # p [nil, false, true].my_none?                           #=> false
+
+# p %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
+# p %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
+# p %w[ant bear cat].my_all?(/t/)                        #=> false
+# p [1, 2i, 3.14].my_all?(Numeric)                       #=> true
+# p [nil, true, 99].my_all?                              #=> false
+# p [].my_all?                                           #=> true
+
+# p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
+# p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
+# p %w[ant bear cat].my_any?(/d/)                        #=> false
+# p [nil, true, 99].my_any?(Integer)                     #=> true
+# p [nil, true, 99].my_any?                              #=> true
+# p [].my_any?                                           #=> false
+
+# p [3, 5, 7, 11].my_all?(&:odd?) # => true
+# p [-8, -9, -6].my_all? { |n| n < 0 } # => true
+# p [3, 5, 8, 11].my_all?(&:odd?) # => false
+# p [-8, -9, -6, 0].my_all? { |n| n < 0 } # => false
+# # test cases required by tse reviewer
+# p [1, 2, 3, 4, 5].my_all? # => true
+# p [1, 2, 3].my_all?(Integer) # => true
+# p %w[dog door rod blade].my_all?(/d/) # => true
+# p [1, 1, 1].my_all?(1) # => true
+
+# p [7, 10, 4, 5].my_any?(&:even?) # => true
+# p %w[q r s i].my_any? { |char| 'aeiou'.include?(char) } # => true
+# p [7, 11, 3, 5].my_any?(&:even?) # => false
+# p %w[q r s t].my_any? { |char| 'aeiou'.include?(char) } # => false
+# # test cases required by tse reviewer
+# p [3, 5, 4, 11].my_any? # => true
+# p "yo? #{[nil, false, nil, false].my_any?}" # => false
+# p [1, nil, false].my_any?(1) # => true
+# p [1, nil, false].my_any?(Integer) # => true
+# p %w[dog door rod blade].my_any?(/z/) # => false
+# p [1, 2, 3].my_any?(1) # => true
+
+# p [3, 5, 7, 11].my_none?(&:even?) # => true
+# p [1, 2, 3, 4].my_none?{|num| num > 4} #=> true
+# p [nil, false, nil, false].my_none? # => true
+# p %w[sushi pizza burrito].my_none? { |word| word[0] == 'a' } # => true
+# p [3, 5, 4, 7, 11].my_none?(&:even?) # => false
+# p %w[asparagus sushi pizza apple burrito].my_none? { |word| word[0] == 'a' } # => false
+# # test cases required by tse reviewer
+# p [1, 2, 3].my_none? # => false
+# p [1, 2, 3].my_none?(String) # => true
+# p [1, 2, 3, 4, 5].my_none?(2) # => false
+# p [1, 2, 3].my_none?(4) # => true

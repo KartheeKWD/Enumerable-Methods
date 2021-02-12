@@ -48,6 +48,8 @@ Style/HashTransformKeys:
   Enabled: false
 Style/HashTransformValues:
   Enabled: false
+Lint/RequireParentheses:
+  Enabled: false 
 
   
    
