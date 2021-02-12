@@ -31,7 +31,7 @@ module Enumerable
 
     arr = to_a
     new_array = []
-    arr.each do |item|
+    arr.my_each do |item|
       new_array.push(item) if yield item
     end
     new_array
@@ -44,7 +44,7 @@ module Enumerable
     elsif arg.nil?
       my_each { |n| return false if n.nil? || n == false }
     elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |n| return true if n.instance_of?(arg) }
+      my_each { |n| return true if n.is_a? arg || n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return false unless arg.match(n) }
     else
@@ -59,7 +59,7 @@ module Enumerable
     elsif arg.nil?
       my_each { |n| return true if n.nil? || n == true }
     elsif arg.is_a? Class
-      my_each { |n| return true if n.class == Integer }
+      my_each { |n| return true if n.is_a? arg ||n.instance_of?(arg)}
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return true if arg.match(n) }
     else
@@ -141,7 +141,7 @@ def multiply_els(args)
   args.my_inject { |result, element| result * element }
 end
 
-# a = [1, 2, 3, 4]
+a = [1, 2, 3, 4]
 # b = [2,2,2,3,3]
 # b = [2, 4, 5]
 # p a.my_each { |i| puts i }
@@ -168,7 +168,8 @@ end
 # p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
 # p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
 # p %w{ant bear cat}.my_none?(/d/)                        #=> true
-# p [1, 3.14, 42].my_none?(Float)                         #=> false
+p [1, 3.14, 42].my_any?(Numeric)
+p [1, 3.14, 42].any?(Numeric)   #=> false
 # p [].my_none?                                           #=> true
 # p [nil].my_none?                                        #=> true
 # p [nil, false].my_none?                                 #=> true
