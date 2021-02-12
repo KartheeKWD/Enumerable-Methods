@@ -53,35 +53,63 @@ module Enumerable
     true
   end
 
-  def my_any?(arg = nil)
-    if block_given?
-      my_each { |item| return true if yield(item) }
-    elsif arg.nil?
-      my_each { |n| return true if n.nil? || n == true }
-    elsif arg.is_a? Class
-      my_each { |n| return true if n.is_a? arg ||n.instance_of?(arg)}
-    elsif !arg.nil? && arg.class == Regexp
-      my_each { |n| return true if arg.match(n) }
-    else
-      my_each { |n| return true if n == arg }
-    end
-    false
-  end
+  # def my_any?(arg = nil)
+  #   if block_given?
+  #     my_each { |item| return true if yield(item) }
+  #   elsif arg.nil?
+  #     my_each { |n| return true if n.nil? || n == true }
+  #   elsif arg.is_a? Class
+  #     my_each { |n| return true if n.is_a? arg ||n.instance_of?(arg)}
+  #   elsif !arg.nil? && arg.class == Regexp
+  #     my_each { |n| return true if arg.match(n) }
+  #   else
+  #     my_each { |n| return true if n == arg }
+  #   end
+  #   false
+  # end
 
-  def my_none?(arg = nil)
-    if block_given?
-      my_each { |item| return false unless yield(item) == false }
-      return true
-    elsif arg.nil?
-      my_each { |item| return false unless item.nil? || item == false }
-    elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |item| return false if item.instance_of?(arg) }
-    elsif !arg.nil? && (arg.is_a? Regexp)
-      my_each { |item| return false if arg.match(item) }
-    else
-      my_each { |item| return false unless item != data }
-    end
-    true
+  def my_any?(arg = nil)   
+     if block_given?      
+      my_each { |elt| return true if yield(elt) }     
+       return false   
+       end   
+        arg.nil? ? arg.class.to_s : my_any? { |elt| elt }
+    if arg.class.to_s == 'Class'      
+      my_each { |elt| return true if elt.is_a? arg }  #
+      elsif arg.class.to_s == 'Regexp'     
+       my_each { |elt| return true if elt =~ arg }   
+       elsif arg.nil?     
+       my_each { |elt| return true if elt }   
+       else    
+       my_each { |elt| return true if elt == arg }   
+       end    
+       false 
+       end
+
+  # def my_none?(arg = nil)
+  #   if block_given?
+  #     my_each { |item| return false unless yield(item) == false }
+  #     return true
+  #   elsif arg.nil?
+  #     my_each { |item| return false unless item.nil? || item == false }
+  #   elsif !arg.nil? && (arg.is_a? Class)
+  #     my_each { |item| return false if item.instance_of?(arg) }
+  #   elsif !arg.nil? && (arg.is_a? Regexp)
+  #     my_each { |item| return false if arg.match(item) }
+  #   else
+  #     my_each { |item| return false unless item != data }
+  #   end
+  #   true
+  # end
+
+  def my_none?(arg = nil, &block)   
+     !my_any?(arg, &block) 
+     end
+    def my_count(number = nil, &block)  
+    arr = to_a   
+    return arr.length unless block_given? || number
+    return arr.my_select { |elt| elt == number }.length if number
+    arr.my_select(&block).length  
   end
 
   def my_count(num = nil)
@@ -147,9 +175,9 @@ a = [1, 2, 3, 4]
 # p a.my_each { |i| puts i }
 # p a.my_each_with_index { |item, index| p "#{index} : #{item}" }
 # p a.my_select { |item| item == 2 }
-# p a.my_all? { |item| item <= 2 }
-# p a.my_any? { |item| item <= 2 }
-# p a.my_none? { |item| item == 4 }
+p a.my_all? { |item| item <= 2 }
+p a.my_any? { |item| item <= 2 }
+p a.my_none? { |item| item == 4 }
 # p a.my_count(2)
 # test_proc = proc { |item| item * 2 }
 # p a.my_map(&test_proc)
