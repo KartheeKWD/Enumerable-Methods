@@ -40,7 +40,7 @@ module Enumerable
   def my_all?(arg = nil)
     if block_given?
       my_each { |item| return false if yield(item) == false }
-      # return true
+
     elsif arg.nil?
       my_each { |n| return false if n.nil? || n == false }
     elsif arg.is_a? Class
