@@ -79,7 +79,7 @@ module Enumerable
     elsif !arg.nil? && (arg.is_a? Regexp)
       my_each { |item| return false if arg.match(item) }
     else
-      my_each { |item| return false unless item != data }
+      my_each { |item| return false unless item != arg }
     end
     true
   end
@@ -140,5 +140,3 @@ end
 def multiply_els(args)
   args.my_inject { |result, element| result * element }
 end
-
-
