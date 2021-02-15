@@ -57,7 +57,7 @@ module Enumerable
     if block_given?
       my_each { |item| return true if yield(item) }
     elsif arg.nil?
-      my_each { |n| return true if n.nil? || n == false }
+      my_each { |n| return true if n.nil?  }
     elsif arg.is_a? Class
       my_each { |n| return true if n.is_a? arg || n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
