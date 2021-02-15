@@ -40,11 +40,11 @@ module Enumerable
   def my_all?(arg = nil)
     if block_given?
       my_each { |item| return false if yield(item) == false }
-      return true
+      # return true
     elsif arg.nil?
       my_each { |n| return false if n.nil? || n == false }
-    elsif !arg.nil? && (arg.is_a? Class)
-      my_each { |n| return true if n.is_a? arg || n.instance_of?(arg) }
+    elsif arg.is_a? Class
+      my_each { |n| return false unless n.is_a? arg || n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
       my_each { |n| return false unless arg.match(n) }
     else
@@ -57,7 +57,7 @@ module Enumerable
     if block_given?
       my_each { |item| return true if yield(item) }
     elsif arg.nil?
-      my_each { |n| return true if n.nil? || n == true }
+      my_each { |n| return true if n.nil? || n == false }
     elsif arg.is_a? Class
       my_each { |n| return true if n.is_a? arg || n.instance_of?(arg) }
     elsif !arg.nil? && arg.class == Regexp
