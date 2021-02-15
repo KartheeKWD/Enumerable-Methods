@@ -24,7 +24,7 @@ $ cd <folder>
 ```
 
 ```
-$ git clone https://raw.githack.com/KartheekWD/Enumerable-Methods/tree/main
+$ git clone https://github.com/KartheekWD/Enumerable-Methods.git
 ```
 
 ## Authors
